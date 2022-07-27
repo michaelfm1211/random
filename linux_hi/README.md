@@ -61,5 +61,5 @@ qemu.
 While trying to make this work I used the following blog posts:
 - https://ibug.io/blog/2019/04/os-lab-1/
 - https://hernandigiorgi.com/how-to-create-an-initramfs-after-you-compile-a-linux-kernel/
-If you try to do this, these links are helpful.
 
+If you try to do this, these links are helpful.
