@@ -9,8 +9,8 @@ Note: I haven't compiled a Linux kernel before this, so I'm probably doing
 *something* wrong.
 
 ### Compiling Linux and Generating an initramfs on macOS
-While doing this I ran into some problems: 1) you can't just compile a Linux
-kernel on macOS, and 2) you can't create an initramfs on macOS because you
+While doing this I ran into some problems: **1)** you can't just compile a Linux
+kernel on macOS, and **2)** you can't create an initramfs on macOS because you
 can't create device special files for Linux with mknod on macOS.
 
 To solve the first problem, I compiled the Linux kernel in a Docker container
@@ -38,6 +38,7 @@ too many things, but this compiled the Linux kernel for me without any errors.
 I used qemu to test if this works. I intented to use qemu all along so I
 disabled anything in the kernel that I didn't think would make a difference in
 qemu.
+
 `qemu-system-x86_64 -kernel bzImage -initrd initramfs.cpio -append
 "root=/dev/ram init=/init"`
 
