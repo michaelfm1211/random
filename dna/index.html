@@ -4,14 +4,21 @@
 	<meta charset="UTF-8">
 	<title>DNA Transcription and Translation</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+	<style>
+#complement, #mrna, #trna, #aa {
+	font-family: monospace;
+}
+	</style>
 </head>
 <body>
 	<table>
 		<tr>
 			<td>DNA</td>
 			<td>
-				<input id="dna" type="text">
-				<button id="dnacalc">Go</button>
+				<form id="form">
+					<input id="dna" type="text">
+					<input type="submit" value="go">
+				</form>
 			</td>
 		</tr>
 		<tr>
@@ -37,7 +44,9 @@
 	</p>
 
 	<script>
-		$('#dnacalc').click(async () => {
+		let code = null;
+		$("#form").submit(async (event) => {
+			event.preventDefault();
 			const dna = $('#dna').val().toLowerCase();
 
 			let complement = "";
@@ -62,8 +71,10 @@
 			$('#mrna').text(mrna);
 			$('#trna').text(trna);
 
-			const response = await fetch('code.json');
-			const code = await response.json();
+			if (!code) {
+				const response = await fetch('code.json');
+				code = await response.json();
+			}
 
 			let str = mrna.replace(/\s/g, '');
 			let aa = "";
