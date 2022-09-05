@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>extemely limited linux 5.15.55 kernel</title>
+</head>
+<body>
+	<h1>my extemely limited linux 5.15.55 kerel</h1>
+	<p>
+		click <a href="bzImage">here</a> to download the bzImage of the
+		kernel. I also made a very minimal
+		<a href="initramfs.cpio">initramfs</a> which prints 'Hello' over
+		and over again so it can be run in qemu. To run everything in
+		qemu, run <span style="font-family: monospace;">
+		qemu-system-x86_64 -kernel bzImage -initrd initramfs.cpio
+		-append "root=/dev/ram init=/init"</span>
+	</p>
+</body>
+</html>

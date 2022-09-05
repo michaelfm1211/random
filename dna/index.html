@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>DNA Transcription and Translation</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+</head>
+<body>
+	<table>
+		<tr>
+			<td>DNA</td>
+			<td>
+				<input id="dna" type="text">
+				<button id="dnacalc">Go</button>
+			</td>
+		</tr>
+		<tr>
+			<td>Complement DNA</td>
+			<td id="complement"></td>
+		</tr>
+		<tr>
+			<td>mRNA</td>
+			<td id="mrna"></td>
+		</tr>
+		<tr>
+			<td>tRNA</td>
+			<td id="trna"></td>
+		</tr>
+		<tr>
+			<td>Amino Acids</td>
+			<td id="aa"></td>
+		</tr>
+	</table>
+	<br>
+	<p style="font-size: 8px;">
+		Click <a href="meme.png">here</a> to see a kind of funny meme.
+	</p>
+
+	<script>
+		$('#dnacalc').click(async () => {
+			const dna = $('#dna').val().toLowerCase();
+
+			let complement = "";
+			let mrna = "";
+			let trna = "";
+			for (let i = 0; i < dna.length; i++) {
+				if (dna[i] == 'a') complement += 't ';
+				else if (dna[i] == 't') complement += 'a ';
+				else if (dna[i] == 'g') complement += 'c ';
+				else if (dna[i] == 'c') complement += 'g ';
+
+				if (dna[i] == 't') mrna += 'u ';
+				else mrna += dna[i] + ' ';
+
+
+				if (dna[i] == 'a') trna += 'u ';
+				else if (dna[i] == 't') trna += 'a ';
+				else if (dna[i] == 'g') trna += 'c ';
+				else if (dna[i] == 'c') trna += 'g ';
+			}
+			$('#complement').text(complement);
+			$('#mrna').text(mrna);
+			$('#trna').text(trna);
+
+			const response = await fetch('code.json');
+			const code = await response.json();
+
+			let str = mrna.replace(/\s/g, '');
+			let aa = "";
+			for(let i = 0; i < str.length; i += 3) {
+				const codon = str.substring(i, i+3);
+				aa += code[codon] + ' ';
+			}
+			$('#aa').text(aa);
+		});
+	</script>
+</body>
+</html>
