@@ -1,0 +1,102 @@
+/*
+Michael's General Purpose CSS Styles.
+*/
+
+/*
+ISC License
+
+Copyright 2022 Michael M.
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
+*/
+
+body {
+	line-height :1.6;
+	font-family: sans-serif;
+	color: #444;
+}
+
+main {
+	margin: 40px auto;
+	max-width: 650px;
+	font-size: 18px;
+	padding: 0 10px;
+}
+
+h1,h2,h3 {
+	font-family: monospace;
+	line-height: 1.2;
+	background-color: #EEEEEE;
+}
+
+.jumbo {
+	padding: 1em;
+	overflow: auto;
+}
+
+nav {
+	font-size: 16px;
+	font-family: monospace;
+	padding: 5px;
+}
+
+nav a {
+	color: blue;
+}
+
+.footnote {
+	font-size: 15px;
+	font-style: italic;
+}
+
+input[type="text"] {
+	background: transparent;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	outline: none;
+	color: #111;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+input[type="text"]:hover {
+	border-color: #333;
+}
+
+main input[type="text"] {
+	font-size: 18px;
+}
+
+@media (prefers-color-scheme: dark) {
+	body {
+		color: #cfcfcf;
+		background-color: #1f1f1f;
+	}
+
+	h1,h2,h3 {
+		background-color: #414141;
+	}
+	
+	a,nav a {
+		color: #56c8ff;
+	}
+
+	input[type="text"] {
+		color: #EEE;
+	}
+
+	input[type="text"]:hover {
+		border-color: #CCC;
+	}
+}
