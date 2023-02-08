@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ASCII to Binary</title>
+	<style>
+#bin {
+	white-space: pre-wrap;
+	line-height: 1.8;
+}
+	</style>
+</head>
+<body>
+	Input: <input id="ascii" type="text">
+	<pre id="bin"></pre>
+	<script>
+		const ascii = document.getElementById('ascii');
+		const pre = document.getElementById('bin');
+
+		function convert() {
+			const vals = [...ascii.value].map(ch =>
+				ch.charCodeAt(0).toString(2).padStart(8, '0'));
+			bin.textContent = vals.join(' ');
+		}
+		ascii.addEventListener('keyup', convert);
+		// if input field has text in it already, do event loop trickery
+		setTimeout(convert, 0);
+	</script>
+</body>
+</html>
