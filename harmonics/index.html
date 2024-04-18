@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Square Wave Harmonics Calculator</title>
+	<style>
+/*
+Michael's General Purpose CSS Styles.
+*/
+
+/*
+ISC License
+
+Copyright 2022 Michael M.
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
+*/
+
+body {
+	line-height :1.6;
+	font-family: sans-serif;
+	color: #444;
+}
+
+main {
+	margin: 40px auto;
+	max-width: 650px;
+	font-size: 18px;
+	padding: 0 10px;
+}
+
+h1,h2,h3 {
+	font-family: monospace;
+	line-height: 1.2;
+	background-color: #EEEEEE;
+}
+
+.jumbo {
+	padding: 1em;
+	overflow: auto;
+}
+
+nav {
+	font-size: 16px;
+	font-family: monospace;
+	padding: 5px;
+}
+
+nav a {
+	color: blue;
+}
+
+.footnote {
+	font-size: 15px;
+	font-style: italic;
+}
+
+input[type="number"], select {
+	background: transparent;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	outline: none;
+	color: #111;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+input[type="number"]:hover, select {
+	border-color: #333;
+}
+
+main input[type="number"], select {
+	font-size: 18px;
+}
+
+@media (prefers-color-scheme: dark) {
+	body {
+		color: #cfcfcf;
+		background-color: #1f1f1f;
+	}
+
+	h1,h2,h3 {
+		background-color: #414141;
+	}
+	
+	a,nav a {
+		color: #56c8ff;
+	}
+
+	input[type="number"], select {
+		color: #EEE;
+	}
+
+	input[type="number"]:hover, select {
+		border-color: #CCC;
+	}
+}
+
+.hidden {
+	display: none;
+}
+
+.mono {
+	font-family: monospace;
+}
+	</style>
+</head>
+<body>
+	<main>
+		<h1 class="jumbo">Square Wave Harmonics Calculator</h1>
+		<p>
+			Given a target frequency and amplitude, this calculator
+			will find a square wave with a lower frequency and
+			determine the amplitude of the resulting harmonic. This
+			calculator assumes a 50% duty cycle.
+		</p>
+		<form id="reqs">
+			<label for="targ">Target Frequency:</label>
+			<input id="targ" type="number" min="1" value="1">
+			<select id="targ_units">
+				<option value="0" select>Hz</option>
+				<option value="3">kHz</option>
+				<option value="6">MHz</option>
+				<option value="9">GHz</option>
+				<option value="12">THz</option>
+			</select>
+			<br>
+
+			<label for="min_src">Minimum Source Frequency:</label>
+			<input id="min_src" type="number" min="1" value="1">
+			<select id="min_src_units">
+				<option value="0" selected>Hz</option>
+				<option value="3">kHz</option>
+				<option value="6">MHz</option>
+				<option value="9">GHz</option>
+				<option value="12">THz</option>
+			</select>
+			<br>
+
+			<label for="max_src">Maximum Source Frequency:</label>
+			<input id="max_src" type="number" min="1" value="1">
+			<select id="max_src_units">
+				<option value="0" selected>Hz</option>
+				<option value="3">kHz</option>
+				<option value="6">MHz</option>
+				<option value="9">GHz</option>
+				<option value="12">THz</option>
+			</select>
+			<br>
+
+			<label for="src_amp">Source Amplitude:</label>
+			<input id="src_amp" type="number" type="number" min="1"
+					value="1">
+			<select id="src_amp_units" >
+				<option value="-6">μV</option>
+				<option value="-3">mV</option>
+				<option value="0" selected>V</option>
+				<option value="3">kV</option>
+				<option value="6">MV</option>
+			</select>
+			<br>
+
+			<input id="submit" type="submit" value="Calculate">
+		</form>
+		<hr>
+		<div id="error" class="hidden">
+			Error: <span id="error_msg"></span>
+		</div>
+		<div id="out" class="hidden mono">
+			<p>
+				<span id="out_n"></span>-th harmonic of
+				<span id="out_freq"></span>.
+			</p>
+			<p>
+				Amplitude: <span id="out_amp"></span>.
+			</p>
+		</div>
+	</main>
+	<script>
+		function metric_prefix(n, sym) {
+			const exp = Math.floor(Math.log10(n));
+			const mant = (n / 10 ** exp).toPrecision(12);
+			if (exp < -3) {
+				return `${mant * 10 ** (exp + 6)} μ${sym}`;
+			} else if (exp < 0) {
+				return `${mant * 10 ** (exp + 3)} m${sym}`;
+			} else if (exp < 3) {
+				return `${mant * 10 ** exp} ${sym}`;
+			} else if (exp < 6) {
+				return `${mant * 10 ** (exp - 3)} k${sym}`;
+			} else if (exp < 9) {
+				return `${mant * 10 ** (exp - 6)} M${sym}`;
+			} else if (exp < 12) {
+				return `${mant * 10 ** (exp - 9)} G${sym}`;
+			} else {
+				return `${mant * 10 ** (exp - 12)} T${sym}`;
+			}
+		}	
+
+		const $ = (id) => document.querySelector(id);
+
+		$("#submit").addEventListener("click", (e) => {
+			e.preventDefault();
+
+			const targ = parseFloat($("#targ").value) * 10 **
+				parseInt($("#targ_units").value);
+			const min_src = parseFloat($("#min_src").value) * 10 **
+				parseInt($("#min_src_units").value);
+			const max_src = parseFloat($("#max_src").value) * 10 **
+				parseInt($("#max_src_units").value);
+			const src_amp = parseFloat($("#src_amp").value) * 10 **
+				parseInt($("#src_amp_units").value);
+
+			$("#error").classList.add("hidden");
+			$("#out").classList.add("hidden");
+
+			if (min_src > max_src) {
+				$("#error_msg").textContent =
+					"Minimum source frequency is higher than maximum source frequency.";
+				$("#error").classList.remove("hidden");
+				return;
+			}
+			if (targ < min_src) {
+				$("#error_msg").textContent =
+					"Target frequency is lower than minimum source frequency.";
+				$("#error").classList.remove("hidden");
+				return;
+			}
+
+			// if the target is within the range, then just use the
+			// first harmonic.
+			if (min_src <= targ && targ <= max_src) {
+				$("#out_n").textContent = 1;
+				$("#out_freq").textContent =
+					metric_prefix(targ, "Hz");
+				$("#out_amp").textContent =
+					metric_prefix(src_amp, "V");
+				$("#out").classList.remove("hidden");
+				return;
+			}
+
+			/*
+			 * The n-th harmonic of a f Hz square wave with a V
+			 * amplitude has the frequency f*(2n - 1) and the
+			 * amplitude a/(2n - 1)
+			 */
+
+			const n = Math.ceil((targ/max_src + 1)/2)
+			const freq = targ / (2*n - 1);
+			if (freq < min_src) {
+				$("#error_msg").textContent =
+					"No frequency in the source range contains a harmonic with the target frequency.";
+				$("#error").classList.remove("hidden");
+				return;
+			}
+			const amp = src_amp / (2*n - 1)
+
+			$("#out_n").textContent = n;
+			$("#out_freq").textContent = metric_prefix(freq, "Hz");
+			$("#out_amp").textContent = metric_prefix(amp, "V");
+			$("#out").classList.remove("hidden");
+		});
+	</script>
+</body>
+</html>
