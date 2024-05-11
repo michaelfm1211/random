@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>8-bit Two's Complement Calculator</title>
+    <style>
+        * {
+            font-size: 24pt;
+            font-family: sans-serif;
+        }
+        #binout, #decout {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>8-bit Two's Complement Calculator</h1>
+    <label for="decin">Decimal to 2s Complement:</label>
+    <input type="text" id="decin">
+    <br>
+    <div id="binout"></div>
+    <br>
+    <br>
+    <label for="binin">2s Complement to Decimal:</label>
+    <input type="text" id="binin">
+    <br>
+    <div id="decout"></div>
+    <script>
+        const $ = q => document.querySelector(q);
+
+        $("#decin").addEventListener("keyup", () => {
+            const num = parseInt($("#decin").value);
+            if (isNaN(num) || num > 127 || num < -128) {
+                $("#binout").textContent = "Invalid input.";
+                return;
+            }
+            if (num < 0) {
+                const bin = [...Math.abs(num + 1).toString(2).padStart(8, "0")];
+                bin[0] = "1";
+                for (let i = 1; i < 8; i++)
+                    bin[i] = bin[i] == "0" ? "1" : "0";
+                $("#binout").textContent = bin.join("");
+            } else {
+                $("#binout").textContent = num.toString(2).padStart(8, "0");
+            }
+        });
+
+        $("#binin").addEventListener("keyup", () => {
+            const twos = $("#binin").value;
+            if (twos.length != 8 || [...twos].some(c => c != "0" && c != "1")) {
+                $("#decout").textContent = "Invalid input.";
+                return;
+            }
+            if (twos[0] == "0") {
+                $("#decout").textContent = parseInt(twos.substring(1), 2);
+            } else if (twos[0] == "1") {
+                const bin = [...twos];
+                for (let i = 0; i < 8; i++)
+                    bin[i] = bin[i] == "0" ? "1" : "0";
+                const num = -parseInt(bin.join(""), "2") - 1;
+                $("#decout").textContent = num.toString();
+            }
+        });
+    </script>
+</body>
+</html>
