@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0">
+	<title>Snake</title>
+	<style>
+body {
+	text-align: center;
+	font-family: monospace;
+	font-size: 18px;
+	line-height: 1.5em;
+	letter-spacing: 1em;
+}
+pre {
+	color: lightgray;
+}
+.apple {
+	color: red;
+}
+.head {
+	color: green;
+}
+.body {
+	color: black;
+}
+	</style>
+</head>
+<body>
+	<h1>SNAKE</h1>
+	<pre></pre>
+	<span id="score"></span>
+
+	<noscript>This game requires JavaScript.</noscript>
+	<script>
+function arrEq(a, b) {
+	return a.every((el, i) => el == b[i]);
+}
+
+const WIDTH = 20;
+const HEIGHT = 20;
+const FPS = 8; // this is the speed of the game
+
+const pre = document.querySelector("pre");
+const score = document.querySelector("#score");
+let gameState = [];
+let keyqueue = [];
+let snake = [];
+let snakeDir = ">";
+let apple = [];
+
+// initalize the game state
+for (let i = 0; i < HEIGHT; i++) {
+	gameState[i] = [];
+	for (let j = 0; j < WIDTH; j++) {
+		gameState[i][j] = '.';
+	}
+}
+snake[0] = [Math.floor(HEIGHT / 2), Math.floor(WIDTH / 2)];
+apple = [Math.floor(Math.random() * HEIGHT),
+		Math.floor(Math.random() * WIDTH)];
+
+const gameInterval = setInterval(() => {
+	// process one event from the keyqueue
+	if (keyqueue.length > 0) {
+		snakeDir = keyqueue.pop();
+	}
+
+	// copy current position (for later) and update position
+	const prevTailPos = [...snake.at(-1)];
+	const prevHeadPos = [...snake[0]];
+	for (let i = snake.length - 1; i > 0; i--) {
+		snake[i] = [...snake[i - 1]];
+	}
+	switch (snakeDir) {
+	case "^":
+		snake[0][0] -= 1;
+		break;
+	case "/":
+		snake[0][0] += 1;
+		break;
+	case ">":
+		snake[0][1] += 1;
+		break;
+	case "<":
+		snake[0][1] -= 1;
+		break;
+	}
+
+	// check if we've hit an apple
+	if (arrEq(snake[0], apple)) {
+		snake.push(prevTailPos);
+		do {
+			apple = [Math.floor(Math.random() * HEIGHT),
+					Math.floor(Math.random() * WIDTH)];
+		} while (snake.some(el => arrEq(el, apple)));
+	}
+
+	// check for death conditions
+	if (snake[0][0] < 0 || snake[0][0] >= HEIGHT ||
+		snake[0][1] < 0 || snake[0][1] >= WIDTH ||
+		snake.slice(1).some(el => arrEq(snake[0], el))) {
+		clearInterval(gameInterval);
+		// we're still going to render and draw the snake, so
+		// a few precautions to make sure we don't out-of-bound
+		// error.
+		snakeDir = "X";
+		snake[0] = prevHeadPos;
+	}
+
+	// clear the game state and render the snake and apple
+	for (let i = 0; i < HEIGHT; i++) {
+		for (let j = 0; j < WIDTH; j++) {
+			gameState[i][j] = ".";
+		}
+	}
+	for (let i = 1; i < snake.length; i++) {
+		gameState[snake[i][0]][snake[i][1]] =
+			"<span class=\"body\">=</span>";
+	}
+	gameState[snake[0][0]][snake[0][1]] =
+		`<span class="head">${snakeDir}</span>`;
+	gameState[apple[0]][apple[1]] = "<span class=\"apple\">*</span>";
+
+	// draw the game state and display score
+	pre.innerHTML = gameState.map(row => row.join("")).join("\n");
+	score.textContent = snake.length - 1;
+
+}, 1000 / FPS);
+
+document.body.addEventListener("keydown", (event) => {
+	switch (event.key) {
+	case "ArrowUp":
+		keyqueue.unshift("^");
+		break;
+	case "ArrowDown":
+		keyqueue.unshift("/");
+		break;
+	case "ArrowRight":
+		keyqueue.unshift(">");
+		break;
+	case "ArrowLeft":
+		keyqueue.unshift("<");
+		break;
+	default:
+		return;
+	}
+	event.preventDefault();
+
+	/*// rerender right now to avoid a laggy feeling
+	gameState[snake[0][0]][snake[0][1]] =
+		`<span class="head">${snakeDir}</span>`;
+	pre.innerHTML = gameState.map(row => row.join("")).join("\n");*/
+});
+	</script>
+</body>
+</html>
