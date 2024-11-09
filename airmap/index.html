@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title></title>
+	<style>
+body {
+	margin: 0px;
+	padding: 0px;
+}
+#map {
+	z-index: 0;
+}
+
+#modal {
+	display: none;
+	position: absolute;
+	background-color: white;
+	padding: 5px;
+	width: 20%;
+	border-radius: 5px;
+	z-index: 2;
+}
+
+.dot {
+	position: absolute;
+	background-color: red;
+	border-radius: 100px;
+	z-index: 1;
+}
+	</style>
+</head>
+<body>
+	<img id="map" src="map.png" />
+	<div id="dots"></div>
+	<div id="modal">
+		IATA Code: <span id="iata"></span><br />
+		IACO Code: <span id="iaco"></span><br />
+		Name: <span id="name"></span><br />
+		City: <span id="city"></span>, <span id="country"></span><br />
+		Time Zone: <span id="tz"></span> (<span id="tz-off"></span>)<br />
+		Latitude: <span id="lat"></span><br />
+		Longitude: <span id="long"></span><br />
+	</div>
+	<div>
+		Map is a plate carrée projection by Daniel R. Strebe. Airport
+		data and indicators are not part of the projection. Both the
+		map projection and this website are available under the
+		<a href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">CC BY-SA 3.0</a>
+		license.
+
+	</div>
+
+	<script src="app.js"></script>
+</body>
+</html>
