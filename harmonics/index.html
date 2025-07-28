@@ -163,11 +163,11 @@ main input[type="number"], select {
 			<input id="src_amp" type="number" type="number" min="1"
 					value="1">
 			<select id="src_amp_units" >
-				<option value="-6">μV</option>
-				<option value="-3">mV</option>
-				<option value="0" selected>V</option>
-				<option value="3">kV</option>
-				<option value="6">MV</option>
+				<option value="-6">μV/m</option>
+				<option value="-3">mV/m</option>
+				<option value="0" selected>V/m</option>
+				<option value="3">kV/m</option>
+				<option value="6">MV/m</option>
 			</select>
 			<br>
 
@@ -245,7 +245,7 @@ main input[type="number"], select {
 				$("#out_freq").textContent =
 					metric_prefix(targ, "Hz");
 				$("#out_amp").textContent =
-					metric_prefix(src_amp, "V");
+					metric_prefix(src_amp, "V/m");
 				$("#out").classList.remove("hidden");
 				return;
 			}
@@ -268,7 +268,7 @@ main input[type="number"], select {
 
 			$("#out_n").textContent = n;
 			$("#out_freq").textContent = metric_prefix(freq, "Hz");
-			$("#out_amp").textContent = metric_prefix(amp, "V");
+			$("#out_amp").textContent = metric_prefix(amp, "V/m");
 			$("#out").classList.remove("hidden");
 		});
 	</script>
